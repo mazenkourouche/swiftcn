@@ -1,0 +1,20 @@
+{
+  "version": "1.0",
+  "styles": {
+    "default": {
+      "name": "Default",
+      "description": "Clean, minimal styling with neutral colors",
+      "files": [
+        "styles/default/Tokens.swift",
+        "styles/default/AppIcon.swift"
+      ]
+    }
+  },
+  "components": {
+    "Button": {
+      "file": "components/Button.swift",
+      "description": "Customizable button with variants and sizes",
+      "dependencies": ["Tokens", "AppIcon"]
+    }
+  }
+}
