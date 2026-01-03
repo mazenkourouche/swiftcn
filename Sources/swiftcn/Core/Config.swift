@@ -3,8 +3,9 @@ import Foundation
 /// Configuration file structure (swiftcn.json)
 struct Config: Codable {
     var version: String = "1.0"
-    var componentsPath: String = "Components/UI"
-    var stylesPath: String = "Styles"
+    var designSystemPath: String = "DesignSystem"
+    var componentsPath: String = "DesignSystem/Components"
+    var stylesPath: String = "DesignSystem/Styles"
     var style: String = "default"
     var installed: [InstalledItem] = []
 

@@ -6,11 +6,11 @@ struct Init: ParsableCommand {
         abstract: "Initialize swiftcn in your project"
     )
 
-    @Option(name: .long, help: "Path for components (default: auto-detected)")
-    var componentsPath: String?
+    @Option(name: .shortAndLong, help: "Path for the Design System folder (default: auto-detected)")
+    var path: String?
 
-    @Option(name: .long, help: "Path for styles (default: auto-detected)")
-    var stylesPath: String?
+    @Flag(name: .shortAndLong, help: "Skip prompts and use defaults")
+    var yes: Bool = false
 
     @Flag(name: .long, help: "Overwrite existing configuration")
     var force: Bool = false
@@ -30,34 +30,57 @@ struct Init: ParsableCommand {
         // Detect project structure
         let sourceDir = FileHandler.findProjectSourceDirectory()
 
-        // Determine paths
-        let finalComponentsPath: String
-        let finalStylesPath: String
-
+        // Determine base path
+        let basePath: String
         if let sourceDir = sourceDir {
-            finalComponentsPath = componentsPath ?? "\(sourceDir)/Components/UI"
-            finalStylesPath = stylesPath ?? "\(sourceDir)/Styles"
+            basePath = sourceDir
             Logger.info("Detected project source: \(sourceDir)/")
         } else {
-            finalComponentsPath = componentsPath ?? "Components/UI"
-            finalStylesPath = stylesPath ?? "Styles"
+            basePath = "."
             Logger.warning("Could not detect project structure, using current directory.")
         }
 
         print("")
 
+        // Get Design System path
+        let designSystemPath: String
+        if let providedPath = path {
+            designSystemPath = providedPath
+        } else if yes {
+            // Use default
+            designSystemPath = basePath == "." ? "DesignSystem" : "\(basePath)/DesignSystem"
+        } else {
+            // Prompt user
+            let defaultPath = basePath == "." ? "DesignSystem" : "\(basePath)/DesignSystem"
+            designSystemPath = promptForPath(
+                message: "Where should the Design System be stored?",
+                defaultValue: defaultPath
+            )
+        }
+
+        // Components and Styles are subdirectories of Design System
+        let componentsPath = "\(designSystemPath)/Components"
+        let stylesPath = "\(designSystemPath)/Styles"
+
+        print("")
+        Logger.info("Design System path: \(designSystemPath)/")
+        Logger.step("Components: \(componentsPath)/")
+        Logger.step("Styles: \(stylesPath)/")
+        print("")
+
         // Create config
         var config = Config()
-        config.componentsPath = finalComponentsPath
-        config.stylesPath = finalStylesPath
+        config.designSystemPath = designSystemPath
+        config.componentsPath = componentsPath
+        config.stylesPath = stylesPath
 
         // Create directories
         do {
-            try FileHandler.createDirectory(at: finalComponentsPath)
-            Logger.success("Created \(finalComponentsPath)/")
+            try FileHandler.createDirectory(at: componentsPath)
+            Logger.success("Created \(componentsPath)/")
 
-            try FileHandler.createDirectory(at: finalStylesPath)
-            Logger.success("Created \(finalStylesPath)/")
+            try FileHandler.createDirectory(at: stylesPath)
+            Logger.success("Created \(stylesPath)/")
         } catch {
             Logger.error("Failed to create directories: \(error.localizedDescription)")
             throw ExitCode.failure
@@ -77,7 +100,7 @@ struct Init: ParsableCommand {
             for file in defaultStyle.files {
                 let content = try awaitSync { await tryFetchFile(path: file) }
                 let fileName = URL(fileURLWithPath: file).lastPathComponent
-                let destinationPath = "\(finalStylesPath)/\(fileName)"
+                let destinationPath = "\(stylesPath)/\(fileName)"
 
                 try FileHandler.writeFile(content: content, to: destinationPath)
                 Logger.success("Added \(fileName)")
@@ -92,8 +115,7 @@ struct Init: ParsableCommand {
             }
         } catch {
             Logger.error("Failed to fetch style files: \(error)")
-            Logger.step("You can add them manually later with: swiftcn add Tokens")
-            // Continue without failing - user can add later
+            Logger.step("You can add them manually later.")
         }
 
         // Save config
@@ -109,10 +131,25 @@ struct Init: ParsableCommand {
         Logger.success("swiftcn initialized!")
         print("")
         print("Next steps:")
-        print("  1. Add color assets to your Asset Catalog (Gray50-950, Error, Warning, Success)")
-        print("  2. Add components with: swiftcn add Button")
-        print("  3. List available components: swiftcn list")
+        print("  1. Add the Design System folder to your Xcode project")
+        print("  2. Add color assets to your Asset Catalog (Gray50-950, Error, Warning, Success)")
+        print("  3. Add components with: swiftcn add Button")
+        print("  4. List available components: swiftcn list")
         print("")
+    }
+
+    // MARK: - Prompts
+
+    private func promptForPath(message: String, defaultValue: String) -> String {
+        print("\(message)")
+        print("Press Enter for default: \(defaultValue)")
+        print("> ", terminator: "")
+
+        guard let input = readLine(), !input.isEmpty else {
+            return defaultValue
+        }
+
+        return input.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     // MARK: - Async Helpers
