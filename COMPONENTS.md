@@ -4,9 +4,9 @@ A comprehensive list of components for the SwiftCN library, organized by categor
 
 ## Progress
 
-**4 / 60 components completed** (Tokens, AppIcon, Button, Input, TextArea)
+**7 / 60 components completed** (Tokens, AppIcon, Button, Input, TextArea, Card, Avatar)
 
-![Progress](https://progress-bar.xyz/7/?width=400)
+![Progress](https://progress-bar.xyz/12/?width=400)
 
 ---
 
@@ -56,9 +56,9 @@ A comprehensive list of components for the SwiftCN library, organized by categor
 
 | Component | Description | Status | Priority |
 |-----------|-------------|--------|----------|
-| **Avatar** | User/entity image with fallback initials | 📋 | Essential |
+| **Avatar** | User/entity image with fallback initials | ✅ | Essential |
 | **Badge** | Status/count indicator | 📋 | Essential |
-| **Card** | Content container with header/content/footer | 📋 | Essential |
+| **Card** | Content container with header/content/footer | ✅ | Essential |
 | **List** | Scrollable content list with sections | 📋 | Essential |
 | **Skeleton** | Loading placeholder with shimmer | 📋 | Essential |
 | **Progress** | Linear progress indicator | 📋 | Essential |

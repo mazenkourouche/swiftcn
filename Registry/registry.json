@@ -25,6 +25,16 @@
       "file": "components/TextArea.swift",
       "description": "Multi-line text input with character count and validation",
       "dependencies": ["Tokens"]
+    },
+    "Card": {
+      "file": "components/Card.swift",
+      "description": "Versatile container with header, content, footer sections",
+      "dependencies": ["Tokens"]
+    },
+    "Avatar": {
+      "file": "components/Avatar.swift",
+      "description": "User image with fallback initials and grouping support",
+      "dependencies": ["Tokens", "AppIcon"]
     }
   }
 }
