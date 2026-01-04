@@ -59,6 +59,8 @@ public struct SCTextArea: View {
     private let errorMessage: String?
     private let maxLength: Int?
     private let showCharacterCount: Bool
+    private let minLines: Int?
+    private let maxLines: Int?
     private let minHeight: CGFloat?
     private let maxHeight: CGFloat?
     private let isDisabled: Bool
@@ -66,6 +68,15 @@ public struct SCTextArea: View {
     private let size: SCTextAreaSize
     private let autocapitalization: TextInputAutocapitalization
     private let autocorrectionDisabled: Bool
+
+    // Approximate line height based on font
+    private var lineHeight: CGFloat {
+        switch size {
+        case .sm: return 20
+        case .default: return 22
+        case .lg: return 22
+        }
+    }
 
     // MARK: - Private State
 
@@ -100,7 +111,17 @@ public struct SCTextArea: View {
     }
 
     private var effectiveMinHeight: CGFloat {
-        minHeight ?? size.minHeight
+        if let minLines = minLines {
+            return CGFloat(minLines) * lineHeight + (size.padding * 2)
+        }
+        return minHeight ?? size.minHeight
+    }
+
+    private var effectiveMaxHeight: CGFloat? {
+        if let maxLines = maxLines {
+            return CGFloat(maxLines) * lineHeight + (size.padding * 2)
+        }
+        return maxHeight
     }
 
     // MARK: - Initializer
@@ -113,6 +134,8 @@ public struct SCTextArea: View {
         errorMessage: String? = nil,
         maxLength: Int? = nil,
         showCharacterCount: Bool = false,
+        minLines: Int? = nil,
+        maxLines: Int? = nil,
         minHeight: CGFloat? = nil,
         maxHeight: CGFloat? = nil,
         isDisabled: Bool = false,
@@ -128,6 +151,8 @@ public struct SCTextArea: View {
         self.errorMessage = errorMessage
         self.maxLength = maxLength
         self.showCharacterCount = showCharacterCount || maxLength != nil
+        self.minLines = minLines
+        self.maxLines = maxLines
         self.minHeight = minHeight
         self.maxHeight = maxHeight
         self.isDisabled = isDisabled
@@ -176,7 +201,7 @@ public struct SCTextArea: View {
                         }
                     }
             }
-            .frame(minHeight: effectiveMinHeight, maxHeight: maxHeight)
+            .frame(minHeight: effectiveMinHeight, maxHeight: effectiveMaxHeight)
             .background(isDisabled ? TokenSurface.muted : TokenSurface.tertiary)
             .clipShape(RoundedRectangle(cornerRadius: TokenRadius.input))
             .overlay(
@@ -331,6 +356,23 @@ public extension SCTextArea {
             placeholder: placeholder,
             minHeight: 100,
             size: .default
+        )
+    }
+
+    /// Creates a text area with specified number of lines
+    static func lines(
+        text: Binding<String>,
+        placeholder: String = "",
+        label: String? = nil,
+        minLines: Int = 3,
+        maxLines: Int? = nil
+    ) -> SCTextArea {
+        SCTextArea(
+            text: text,
+            placeholder: placeholder,
+            label: label,
+            minLines: minLines,
+            maxLines: maxLines
         )
     }
 }

@@ -2,6 +2,14 @@
 
 A comprehensive list of components for the SwiftCN library, organized by category and priority.
 
+## Progress
+
+**4 / 60 components completed** (Tokens, AppIcon, Button, Input, TextArea)
+
+![Progress](https://progress-bar.xyz/7/?width=400)
+
+---
+
 ## Status Legend
 
 - ✅ Completed
