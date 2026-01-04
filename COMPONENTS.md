@@ -26,7 +26,7 @@ A comprehensive list of components for the SwiftCN library, organized by categor
 
 | Component | Description | Status | Priority |
 |-----------|-------------|--------|----------|
-| **Input / TextField** | Single-line text input with variants | 📋 | Essential |
+| **Input / TextField** | Single-line text input with variants | ✅ | Essential |
 | **TextArea** | Multi-line text input | 📋 | Essential |
 | **Switch** | iOS-style toggle switch | 📋 | Essential |
 | **Checkbox** | Boolean selection control | 📋 | Essential |
@@ -202,7 +202,7 @@ All components follow these principles:
 - [x] Button
 
 ### Phase 2: Core Inputs
-- [ ] Input / TextField
+- [x] Input / TextField
 - [ ] TextArea
 - [ ] Switch
 - [ ] Select / Picker
