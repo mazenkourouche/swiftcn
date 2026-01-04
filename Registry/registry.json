@@ -20,6 +20,11 @@
       "file": "components/Input.swift",
       "description": "Text input field with icons, labels, and validation states",
       "dependencies": ["Tokens", "AppIcon"]
+    },
+    "TextArea": {
+      "file": "components/TextArea.swift",
+      "description": "Multi-line text input with character count and validation",
+      "dependencies": ["Tokens"]
     }
   }
 }
